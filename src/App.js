@@ -48,6 +48,16 @@ function App() {
     console.log(item);
   };
 
+  const expenseDelete = (id) => {
+    console.log('delete 작동했는지');
+    // setItem과 id 활용해서 해당 객체 찾고, 삭제해주기
+    const index = item.findIndex((item) => item.id === id);
+    console.log(index);
+    const newItem = [...item];
+    newItem.splice(index, 1);
+    setItem(newItem);
+  };
+
   return (
     <div className="App">
       <div className="message-box">아이템이 삭제되었습니다</div>
@@ -69,18 +79,17 @@ function App() {
           </button>
         </div>
         <div className="list-container">
-          <div className="expense">
-            <div>식비</div>
-            <div>금액</div>
-            <button className="icon-btn">수정</button>
-            <button className="icon-btn">삭제</button>
-          </div>
           {item.map((item) => (
             <div key={item.id} className="expense">
               <div>{item.expenseName}</div>
               <div>{item.expenseCost}</div>
               <button className="icon-btn">수정</button>
-              <button className="icon-btn">삭제</button>
+              <button
+                className="icon-btn"
+                onClick={() => expenseDelete(item.id)}
+              >
+                삭제
+              </button>
             </div>
           ))}
           <button className="delete-btn">목록 지우기</button>
