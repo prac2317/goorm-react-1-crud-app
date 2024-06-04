@@ -7,3 +7,4 @@
 
 ## 시연 영상
 
+![react-crud-app 시연영상](https://github.com/prac2317/goorm-react-1-crud-app/assets/142345018/1918fd49-1af7-4e73-83c4-5e3a3af5b648)
