@@ -1,30 +1,23 @@
 import { useState } from 'react';
 import './App.css';
+import ExpenseForm from './components/ExpenseForm';
+import ExpenseLists from './components/ExpenseLists';
 
 function App() {
   const [item, setItem] = useState([]);
   const [expenseName, setExpenseName] = useState();
-  const [expenseCost, setExpenseCost] = useState();
+  const [expenseCost, setExpenseCost] = useState(0);
   const [isUpdateActivated, setIsUpdateActivated] = useState(false);
   const [currentId, setCurrentID] = useState('');
   const [alert, setAlert] = useState('');
   const [timeoutId, setTimeoutId] = useState(null);
 
-  const onChangeExpenseName = (event) => {
-    setExpenseName(event.target.value);
-  };
-
-  const onChangeExpenseCost = (event) => {
-    setExpenseCost(event.target.value);
-  };
-
+  // 알림창
   const showAlert = (message) => {
     setAlert(message);
-
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-
     const newTimeoutId = setTimeout(() => {
       setAlert('');
     }, 3000);
@@ -55,7 +48,7 @@ function App() {
 
     // 입력창 비우기
     setExpenseName('');
-    setExpenseCost('');
+    setExpenseCost(0);
   };
 
   //삭제
@@ -77,14 +70,20 @@ function App() {
     setExpenseName(currentItem.expenseName);
     setExpenseCost(currentItem.expenseCost);
     setCurrentID(currentItem.id);
-    console.log(sum);
   };
 
+  // 총지출 계산하기
   const sum = item.reduce(
     (accumulator, currentValue) =>
       accumulator + Number(currentValue.expenseCost),
     0
   );
+
+  // 목록 지우기
+  const deleteAllItem = () => {
+    setItem([]);
+    showAlert('삭제');
+  };
 
   return (
     <div className="App">
@@ -96,46 +95,25 @@ function App() {
           아이템이 {alert} 되었습니다.
         </div>
       )}
-      <div className="title">
-        <h1>예산 계산기</h1>
-      </div>
-      {/* 각 div들 이름 어떻게 작성했는지 비교하기 */}
+
       <div className="container">
-        <div className="input-container">
-          {/* 지출 뭐라고 표시했을지 확인 */}
-          <div className="expense-name">
-            <span>지출 항목</span>
-            <input value={expenseName} onChange={onChangeExpenseName}></input>
-          </div>
-          <div className="expense-cost">
-            <span>비용</span>
-            <input value={expenseCost} onChange={onChangeExpenseCost}></input>
-          </div>
-          <button className="input-btn" onClick={expenseSubmit}>
-            {isUpdateActivated ? '수정' : '제출'}
-          </button>
+        <div className="title">
+          <h1>예산 계산기</h1>
         </div>
-        <div className="list-container">
-          {item.map((item) => (
-            <div key={item.id} className="expense">
-              <div>{item.expenseName}</div>
-              <div>{item.expenseCost}</div>
-              <button
-                className="icon-btn"
-                onClick={() => expenseUpdate(item.id)}
-              >
-                수정
-              </button>
-              <button
-                className="icon-btn"
-                onClick={() => expenseDelete(item.id)}
-              >
-                삭제
-              </button>
-            </div>
-          ))}
-          <button className="delete-btn">목록 지우기</button>
-        </div>
+        <ExpenseForm
+          expenseName={expenseName}
+          setExpenseName={setExpenseName}
+          expenseCost={expenseCost}
+          setExpenseCost={setExpenseCost}
+          expenseSubmit={expenseSubmit}
+          isUpdateActivated={isUpdateActivated}
+        />
+        <ExpenseLists
+          item={item}
+          expenseUpdate={expenseUpdate}
+          expenseDelete={expenseDelete}
+          deleteAllItem={deleteAllItem}
+        />
       </div>
       <div className="total-cost">총지출 : {sum}원</div>
     </div>

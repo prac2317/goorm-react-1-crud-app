@@ -1,0 +1,23 @@
+.expense {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.icon-btn {
+  background-color: #cbb7f1;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.icon-btn:hover {
+  background-color: #9575cd;
+}
