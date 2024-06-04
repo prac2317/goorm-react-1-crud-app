@@ -8,6 +8,7 @@ function App() {
   const [isUpdateActivated, setIsUpdateActivated] = useState(false);
   const [currentId, setCurrentID] = useState('');
   const [alert, setAlert] = useState('');
+  const [timeoutId, setTimeoutId] = useState(null);
 
   const onChangeExpenseName = (event) => {
     setExpenseName(event.target.value);
@@ -19,9 +20,15 @@ function App() {
 
   const showAlert = (message) => {
     setAlert(message);
-    setTimeout(() => {
-      setAlert(null);
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    const newTimeoutId = setTimeout(() => {
+      setAlert('');
     }, 3000);
+    setTimeoutId(newTimeoutId);
   };
 
   //추가 + 삭제
