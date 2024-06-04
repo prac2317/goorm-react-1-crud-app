@@ -77,14 +77,21 @@ function App() {
     setExpenseName(currentItem.expenseName);
     setExpenseCost(currentItem.expenseCost);
     setCurrentID(currentItem.id);
+    console.log(sum);
   };
+
+  const sum = item.reduce(
+    (accumulator, currentValue) =>
+      accumulator + Number(currentValue.expenseCost),
+    0
+  );
 
   return (
     <div className="App">
       {alert && (
         <div
           className="message-box"
-          style={{ backgroundColor: alert === '삭제' ? 'red' : 'green' }}
+          style={{ backgroundColor: alert === '삭제' ? '#f44336' : '#4caf50' }}
         >
           아이템이 {alert} 되었습니다.
         </div>
@@ -130,7 +137,7 @@ function App() {
           <button className="delete-btn">목록 지우기</button>
         </div>
       </div>
-      <div className="total-cost">총지출</div>
+      <div className="total-cost">총지출 : {sum}원</div>
     </div>
   );
 }
