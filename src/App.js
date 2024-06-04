@@ -2,66 +2,89 @@ import { useState } from 'react';
 import './App.css';
 
 function App() {
-  const [item, setItem] = useState([
-    {
-      id: '1',
-      expenseName: '사과',
-      expenseCost: '200원',
-    },
-    {
-      id: '2',
-      expenseName: '배',
-      expenseCost: '300원',
-    },
-    {
-      id: '3',
-      expenseName: '딸기',
-      expenseCost: '400원',
-    },
-  ]);
+  const [item, setItem] = useState([]);
   const [expenseName, setExpenseName] = useState();
   const [expenseCost, setExpenseCost] = useState();
+  const [isUpdateActivated, setIsUpdateActivated] = useState(false);
+  const [currentId, setCurrentID] = useState('');
+  const [alert, setAlert] = useState('');
 
   const onChangeExpenseName = (event) => {
     setExpenseName(event.target.value);
-    console.log(expenseName);
   };
 
   const onChangeExpenseCost = (event) => {
     setExpenseCost(event.target.value);
-    console.log(expenseCost);
   };
 
-  //새로운 expense 생성
+  const showAlert = (message) => {
+    setAlert(message);
+    setTimeout(() => {
+      setAlert(null);
+    }, 3000);
+  };
+
+  //추가 + 삭제
   const expenseSubmit = () => {
-    console.log('작동했는지');
-    console.log(expenseName);
-    console.log(expenseCost);
-    const newItem = {
-      id: new Date().getTime(),
-      expenseName,
-      expenseCost,
-    };
-    setItem([...item, newItem]);
+    // 추가할 경우
+    if (currentId === '') {
+      const newItem = {
+        id: new Date().getTime(),
+        expenseName,
+        expenseCost,
+      };
+      setItem([...item, newItem]);
+      showAlert('생성');
+
+      //수정할 경우
+    } else {
+      const index = item.findIndex((item) => item.id === currentId);
+      item[index].expenseName = expenseName;
+      item[index].expenseCost = expenseCost;
+      setIsUpdateActivated(false);
+      setCurrentID('');
+      showAlert('수정');
+    }
+
+    // 입력창 비우기
     setExpenseName('');
     setExpenseCost('');
-    console.log(item);
   };
 
+  //삭제
   const expenseDelete = (id) => {
-    console.log('delete 작동했는지');
-    // setItem과 id 활용해서 해당 객체 찾고, 삭제해주기
     const index = item.findIndex((item) => item.id === id);
-    console.log(index);
     const newItem = [...item];
     newItem.splice(index, 1);
     setItem(newItem);
+    showAlert('삭제');
+  };
+
+  //수정
+  const expenseUpdate = (id) => {
+    setIsUpdateActivated(true);
+
+    const index = item.findIndex((item) => item.id === id);
+    const currentItem = item[index];
+
+    setExpenseName(currentItem.expenseName);
+    setExpenseCost(currentItem.expenseCost);
+    setCurrentID(currentItem.id);
   };
 
   return (
     <div className="App">
-      <div className="message-box">아이템이 삭제되었습니다</div>
-      <h1>예산 계산기</h1>
+      {alert && (
+        <div
+          className="message-box"
+          style={{ backgroundColor: alert === '삭제' ? 'red' : 'green' }}
+        >
+          아이템이 {alert} 되었습니다.
+        </div>
+      )}
+      <div className="title">
+        <h1>예산 계산기</h1>
+      </div>
       {/* 각 div들 이름 어떻게 작성했는지 비교하기 */}
       <div className="container">
         <div className="input-container">
@@ -75,7 +98,7 @@ function App() {
             <input value={expenseCost} onChange={onChangeExpenseCost}></input>
           </div>
           <button className="input-btn" onClick={expenseSubmit}>
-            제출
+            {isUpdateActivated ? '수정' : '제출'}
           </button>
         </div>
         <div className="list-container">
@@ -83,7 +106,12 @@ function App() {
             <div key={item.id} className="expense">
               <div>{item.expenseName}</div>
               <div>{item.expenseCost}</div>
-              <button className="icon-btn">수정</button>
+              <button
+                className="icon-btn"
+                onClick={() => expenseUpdate(item.id)}
+              >
+                수정
+              </button>
               <button
                 className="icon-btn"
                 onClick={() => expenseDelete(item.id)}
